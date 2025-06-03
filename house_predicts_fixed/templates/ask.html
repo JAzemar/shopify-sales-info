@@ -1,0 +1,8 @@
+<h1>Ask the AI Assistant</h1>
+<form method="post">
+    <input type="text" name="question" placeholder="Ask a question" />
+    <bottom type="submit">Subit</bottom>
+</form>
+{% if answer %}
+  <p><strong>AI:</strong> {{ answer['answer'] }}</p>
+{% endif %}  

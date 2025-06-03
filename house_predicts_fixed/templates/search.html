@@ -1,0 +1,9 @@
+<h1>Smart Search</h1>
+<form method="post">
+    <input type="text" name="query" placeholders="search..." />
+    <button type="submit">Search</button>
+</form>
+{% if results % }
+  <h2>Results for "{{ results.query }}":</h2>
+  <pre>{{ results.matches }}</pre>
+{% endif %}

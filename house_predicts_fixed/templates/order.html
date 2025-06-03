@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+    <meta charset=""UTF-8">
+    <title>Shopify Orders Dashboard</title>
+    <style>
+        body { font-family: Arieal, sans-serif; margin: 40px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        th { background-color: #f0f0f0; }
+        caption { font-size: 1.5em; margin-bottom: 15px; }
+    </style>
+ </head>  
+ <body>
+    <h1>Shopify Orders</h1>
+    {% if orders %}
+    <table>
+        <caption>Total Orders: {{ orders |length }}</caption>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Customer</th>
+                <th>Total</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.custoner.first_name }} {{ order.customer.last_name }}</td>
+                <td>${{ order.total_price }}</td>
+                <td>{{ order.financial_status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No orders found.</p>
+    {% endif %}
+ </body>
+</html>
