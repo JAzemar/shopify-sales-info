@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: shopify-flask-dashboard
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    enVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SHOPIFY_API_KEY
+        value: your_real_key
+      - key: SHOP_NAME
+        value: your-store-name

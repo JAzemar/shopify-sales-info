@@ -1,8 +1,148 @@
-<h1>Ask the AI Assistant</h1>
-<form method="post">
-    <input type="text" name="question" placeholder="Ask a question" />
-    <bottom type="submit">Subit</bottom>
-</form>
-{% if answer %}
-  <p><strong>AI:</strong> {{ answer['answer'] }}</p>
-{% endif %}  
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Ask the AI Assistant</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            text-align: center;
+            color: #333
+        }
+        #chat-box {
+            background: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+            width: fit-content;
+            max-width: 75%;
+        }
+        .user {
+            background-color: #d0e7ff;
+            color: #003366;
+            align-self: flex-start;
+        }
+        .bot {
+            background-color: #e6ffe6;
+            color: #003366;
+            align-self: flex-start;
+        }
+        form {
+            display: flex;
+            gap: 10px;
+            justify-content: center;  
+        }
+        input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #aaa;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #0057e7;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0051b3;
+        }
+        @media (max-width: 600px) {
+            #chat-box {
+                height: 300px;
+            }
+            input[type="text"] {
+                width: 100%;
+            }
+
+            form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        .typing {
+            font-style: italic;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    
+    <h2>Ask the AI Assistant</h2>
+
+    <div id="chat-box">
+        {% if answer %}
+            <div class="messafe user">You: {{ question }}</div>
+            <div class="message bot">AI: {{ answer['answer'] }}</div>
+        {% endif %}
+    </div>
+
+    <form method="POST" id="chatform">
+        <input type="text" name="question" id="user-input" placeholder="Type your question here..." required />
+    </form>
+
+    <script>
+        const form = document.getElementById("chatform");
+        const input = document.getElementById("user-inpu")
+        const chatBox = document.getElementById("chat-box");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const question = input.value.trim();
+            if (!question) return;
+
+            // Show user question
+            const userMessage = document.createElement("div");
+            userMessage.className = "message user";
+            userMessage.innerText = "You: " + question;
+            chatBox.appendChild(userMessage);
+
+            // Show typing message
+            const typingMessage = document.createElement("div");
+            typingMessage.className = "message typing";
+            typingMessage.innerText = "AI is typing...";
+            chatBox.appendChild(typingMessage);
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Send to Flask backend
+            const response = await fetch("/api/ask", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ question })
+            });
+
+            const data = await response.json();
+
+            // Remove typing
+            chatBox.removeChild(typingMessage);
+
+            // Show AI response
+            const botMessage = document.createElement("div")
+            botMessage.className = "message bot";
+            botMessage.innerText = "AI: " + data.answer;
+            chatBox.appendChild(botMessage);
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+            input.value ="";
+        });
+    </script>
+
+</body>
+</html>   
